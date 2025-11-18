@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>SmartBin Live Dashboard</title>
+  <style>
+    body {
+      background:#111;
+      color:white;
+      font-family:Arial;
+      padding:20px;
+    }
+    .card {
+      background:#1a1a1a;
+      padding:20px;
+      margin:20px 0;
+      border-radius:10px;
+      border:1px solid #333;
+    }
+    .title {
+      font-size:26px;
+      font-weight:bold;
+      margin-bottom:10px;
+    }
+    .value {
+      font-size:22px;
+      margin:5px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>♻ Smart Waste Management Dashboard</h1>
+
+<div class="card">
+  <div class="title">Food Waste Bin</div>
+  <div id="food-distance" class="value">Distance: --</div>
+  <div id="food-fill" class="value">Fill: --</div>
+  <div id="food-level" class="value">Level: --</div>
+</div>
+
+<div class="card">
+  <div class="title">Recycle Bin</div>
+  <div id="rec-distance" class="value">Distance: --</div>
+  <div id="rec-fill" class="value">Fill: --</div>
+  <div id="rec-level" class="value">Level: --</div>
+</div>
+
+<div class="card">
+  <div class="title">General Waste Bin</div>
+  <div id="gen-distance" class="value">Distance: --</div>
+  <div id="gen-fill" class="value">Fill: --</div>
+  <div id="gen-level" class="value">Level: --</div>
+</div>
+
+<div class="card">
+  <div class="title">Smell Sensor</div>
+  <div id="smell-delta" class="value">Delta: --</div>
+  <div id="smell-level" class="value">Smell Level: --</div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+    databaseURL: "https://smartbin-52978-default-rtdb.firebaseio.com/"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+db.ref("bins/status").on("value", snap => {
+    const data = snap.val();
+    if (!data) return;
+
+    document.getElementById("food-distance").innerText = "Distance: " + data.food.distance_cm + " cm";
+    document.getElementById("food-fill").innerText     = "Fill: " + data.food.fill_pct + "%";
+    document.getElementById("food-level").innerText    = "Level: " + data.food.level;
+
+    document.getElementById("rec-distance").innerText = "Distance: " + data.recycle.distance_cm + " cm";
+    document.getElementById("rec-fill").innerText     = "Fill: " + data.recycle.fill_pct + "%";
+    document.getElementById("rec-level").innerText    = "Level: " + data.recycle.level;
+
+    document.getElementById("gen-distance").innerText = "Distance: " + data.general.distance_cm + " cm";
+    document.getElementById("gen-fill").innerText     = "Fill: " + data.general.fill_pct + "%";
+    document.getElementById("gen-level").innerText    = "Level: " + data.general.level;
+
+    document.getElementById("smell-delta").innerText  = "Delta: " + data.smell.delta;
+    document.getElementById("smell-level").innerText  = "Smell Level: " + data.smell.level;
+});
+</script>
+</body>
+</html>
